@@ -60,34 +60,13 @@ def get_audio_info(file_content: str, file_type: str) -> Dict:
 
 
 def validate_file(data, binary=False):
-    """
-    Validates the provided file data.
-
-    Args:
-        data (dict): A dictionary containing the file data. Must include the key "audio".
-        binary (bool, optional): A flag indicating whether the file is in binary format. Defaults to False.
-
-    Returns:
-        tuple: A tuple containing a boolean indicating success or failure, and a dictionary with error details or a tuple with file type and decoded file content.
-
-    Raises:
-        Exception: If there is an error processing the file.
-
-    Errors:
-        - {"error": "audio field is required"}: If the "audio" key is not present in the data.
-        - {"error": "Invalid json data"}: If the data contains keys other than "audio".
-        - {"error": "File size exceeds max limit (XMB)"}: If the file size exceeds the maximum allowed size.
-        - {"error": "Invalid base64 value"}: If the base64 decoding fails.
-        - {"error": "Not supported file format"}: If the file format is not supported.
-        - {"error": "Error processing file"}: If there is an unspecified error during file processing.
-    """
     try:
         if "audio" not in data:
-            return False, {"error": "audio field is required"}
+            return False, {"error": "Audio field is required"}
 
         keys = [key for key in data.keys()]
         if keys != ["audio"]:
-            return False, {"error": "Invalid json data"}
+            return False, {"error": "Invalid data"}
         if binary:
             file = data["audio"]
             if file.content_length and file.content_length > constants.MAX_FILE_SIZE:
@@ -109,7 +88,7 @@ def validate_file(data, binary=False):
                 }
         file_type = magic.from_buffer(decoded_file, mime=True)
         if file_type not in constants.SUPPORTED_FILE_TYPES:
-            return False, {"error": "Not supported file format"}
+            return False, {"error": "Not supported audio format"}
 
         return True, (file_type, decoded_file)
 
@@ -179,8 +158,6 @@ def analyze_audio():
     """
     try:
         data = request.get_json()
-        if not data:
-            return jsonify({"error": "Invalid JSON data"}), 400
 
         is_valid, result = validate_file(data)
 
@@ -249,12 +226,16 @@ def analyze_binary_audio():
         return jsonify({"error": "Internal server error"}), 500
 
 
-@app.route("/")
+@app.route("/", methods=["GET"])
 def docs():
     from flask import redirect
 
-    redirect("/docs/")
+    return redirect("/docs/")
+
+
+def create_app():
+    return app
 
 
 if __name__ == "__main__":
-    app.run(debug=True)
+    app.run(host="0.0.0.0", debug=True, port=8000)
