@@ -14,7 +14,7 @@ Simple REST API for speech-analytics using flask.
    ```
 2. Navigate to the project directory:
    ```sh
-   cd rdi-task
+   cd speech-analytics-task
    ```
 3. Build and the docker image:
    ```sh
