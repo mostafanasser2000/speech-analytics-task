@@ -3,7 +3,7 @@
 ## WSGI (Web Server Gateway Interface)
 
 Is standard interface between **web servers** and Python **web application** or **frameworks**, to support web application portability across a variety of web servers. It is a Python standard described in PEP 333(3).
-![WSGI](imgs/wsgi.png)
+![WSGI](assets/wsgi.png)
 
 ## ASGI (Asynchronous Server Gateway Interface)
 Is a successor to WSGI and is designed to handle asynchronous code.
